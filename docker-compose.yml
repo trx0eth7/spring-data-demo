@@ -1,0 +1,17 @@
+version: '3.8'
+
+networks:
+  default:
+    name: sdd-net
+
+services:
+  database:
+    container_name: database
+    image: postgres:12.6
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: toor
+      POSTGRES_DB: sdd
+    ports:
+      - 5432:5432
