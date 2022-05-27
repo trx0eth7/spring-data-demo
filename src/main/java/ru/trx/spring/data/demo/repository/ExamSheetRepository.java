@@ -8,7 +8,14 @@ import java.util.List;
 
 public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer> {
 
-    List<ExamSheet> findByNameContainingIgnoreCase(String name);
+    List<ExamSheet> findAllByNameContainingIgnoreCase(String name);
+
+    @Query("select e from ExamSheet e join e.students s where s.id = ?1")
+    List<ExamSheet> findAllByStudentId(Integer id);
+
+
+
+
 
 
 
