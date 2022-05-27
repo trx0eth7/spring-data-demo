@@ -5,20 +5,19 @@ networks:
     driver: bridge
 
 services:
-  app_sdd:
-    build:
-      context: ./deployment/app
-      dockerfile: ./docker-entrypoint.sh
-    container_name: app_sdd
-    restart: on-failure
-    depends_on:
-      - postgres_sdd
-      - mongo_sdd
-    volumes:
-      - ./deployment/app:/opt/app-home
-    ports:
-      - 8080:8080
-
+#  app_sdd:
+#    build:
+#      context: ./deployment/app
+#      dockerfile: ./Dockerfile
+#    container_name: app_sdd
+#    restart: on-failure
+#    depends_on:
+#      - postgres_sdd
+#      - mongo_sdd
+#    volumes:
+#      - ./deployment/app:/opt/app-home
+#    ports:
+#      - 8080:8080
 
   postgres_sdd:
     container_name: postgres_sdd
@@ -36,16 +35,16 @@ services:
     networks:
       - sdd-net
 
-  mongo_sdd:
-    image: "mongo"
-    container_name: mongo_sdd
-    restart: always
-    environment:
-      MONGO_INITDB_DATABASE: sdd
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-    volumes:
-      - ./deployment/mongo/mongodbdata:/data/db
-      - ./deployment/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    ports:
-      - "27017-27019:27017-27019"
+#  mongo_sdd:
+#    image: "mongo"
+#    container_name: mongo_sdd
+#    restart: always
+#    environment:
+#      MONGO_INITDB_DATABASE: sdd
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: toor
+#    volumes:
+#      - ./deployment/mongo/mongodbdata:/data/db
+#      - ./deployment/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#    ports:
+#      - "27017-27019:27017-27019"
