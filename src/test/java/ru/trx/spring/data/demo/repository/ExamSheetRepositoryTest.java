@@ -3,6 +3,9 @@ package ru.trx.spring.data.demo.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.trx.spring.data.demo.entity.ExamSheet;
 import ru.trx.spring.data.demo.entity.Student;
 
@@ -10,9 +13,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 /**
  * @author Alexander Vasiliev
@@ -107,5 +114,34 @@ class ExamSheetRepositoryTest {
                 studentExamSheets.stream()
                         .map(ExamSheet::getId)
                         .collect(Collectors.toSet()), "Not equals");
+    }
+
+    @Test
+    void findAllByNameContainingIgnoreCaseWithPagination() {
+        // given
+        var baseNumber = UUID.randomUUID().toString();
+        var generatedExamSheets =
+                IntStream.range(10, 99).boxed().map(idx -> {
+                    var examSheet = new ExamSheet();
+                    examSheet.setName(String.format("Exam sheet %s#%d", baseNumber, idx));
+
+                    return examSheet;
+                }).collect(Collectors.toList());
+
+        examSheetRepository.saveAll(generatedExamSheets);
+
+        var pageable = PageRequest.of(0, 20)
+                .withSort(Sort.by(ASC, "name"));
+
+        // when
+        var foundExamSheets = examSheetRepository
+                .findAllByNameContainingIgnoreCase(baseNumber, pageable);
+
+        // then
+        assertEquals(IntStream.range(10, 30).boxed()
+                .map(String::valueOf)
+                .collect(Collectors.toList()), foundExamSheets.stream()
+                .map(es -> es.getName().substring(48)) // 49 - is position after '#'
+                .collect(Collectors.toList()));
     }
 }
