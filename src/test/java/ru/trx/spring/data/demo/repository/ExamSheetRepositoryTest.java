@@ -116,6 +116,28 @@ class ExamSheetRepositoryTest {
     }
 
     @Test
+    void findAllByNameContainingIgnoreCaseWithSorting() {
+        // given
+        var baseNumber = UUID.randomUUID().toString();
+
+        var generatedExamSheets = Stream.generate(ExamSheet::new)
+                .peek(e -> e.setName("Exam sheet " + baseNumber))
+                .limit(10)
+                .collect(Collectors.toList());
+
+        examSheetRepository.saveAll(generatedExamSheets);
+
+        // when
+        var foundExamSheets = examSheetRepository
+                .findAllByNameContainingIgnoreCase(baseNumber, Sort.by(ASC, "id"));
+
+        // then
+        assertEquals(foundExamSheets.stream()
+                .sorted(Comparator.comparing(ExamSheet::getId))
+                .collect(Collectors.toList()), foundExamSheets, "Not equals");
+    }
+
+    @Test
     void findAllByNameContainingIgnoreCaseWithPagination() {
         // given
         var baseNumber = UUID.randomUUID().toString();
@@ -145,24 +167,27 @@ class ExamSheetRepositoryTest {
     }
 
     @Test
-    void findAllByNameContainingIgnoreCaseWithSorting() {
+    void deleteStudentFromExamSheet() {
         // given
-        var baseNumber = UUID.randomUUID().toString();
+        var student = new Student();
+        var student2 = new Student();
 
-        var generatedExamSheets = Stream.generate(ExamSheet::new)
-                .peek(e -> e.setName("Exam sheet " + baseNumber))
-                .limit(10)
-                .collect(Collectors.toList());
+        var students = studentRepository.saveAll(List.of(student, student2));
 
-        examSheetRepository.saveAll(generatedExamSheets);
+        var examSheet = new ExamSheet();
+        examSheet.setStudents(students);
+
+        var savedExamSheet = examSheetRepository.save(examSheet);
+        var needRemoveStudent = students.get(0);
 
         // when
-        var foundExamSheets = examSheetRepository
-                .findAllByNameContainingIgnoreCase(baseNumber, Sort.by(ASC, "id"));
+        examSheetRepository.deleteStudent(savedExamSheet.getId(), needRemoveStudent.getId());
 
         // then
-        assertEquals(foundExamSheets.stream()
-                .sorted(Comparator.comparing(ExamSheet::getId))
-                .collect(Collectors.toList()), foundExamSheets, "Not equals");
+        var examSheetStudents = studentRepository.findAllByExamSheetId(savedExamSheet.getId());
+
+        assertEquals(List.of(students.get(1).getId()), examSheetStudents.stream()
+                .map(Student::getId)
+                .collect(Collectors.toList()), "Not equals");
     }
 }

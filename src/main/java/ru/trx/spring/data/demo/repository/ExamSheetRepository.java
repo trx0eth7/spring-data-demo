@@ -9,7 +9,7 @@ import ru.trx.spring.data.demo.entity.ExamSheet;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer> {
+public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer>, CustomExamSheetRepository {
 
     List<ExamSheet> findAllByNameContainingIgnoreCase(String name);
 
@@ -23,9 +23,9 @@ public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer> {
     List<ExamSheet> findAllByStudentsBirthdayBetween(LocalDate birthdayStart,
                                                      LocalDate birthdayEnd);
 
-    List<ExamSheet> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
-
     List<ExamSheet> findAllByNameContainingIgnoreCase(String name, Sort sort);
+
+    List<ExamSheet> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
 
 }
