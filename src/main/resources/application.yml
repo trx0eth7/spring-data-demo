@@ -3,6 +3,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/sdd
     username: root
     password: toor
+  data:
+    mongodb:
+      host: localhost
+      database: sdd
+      authentication-database: admin
+      username: root
+      password: toor
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   jpa:
