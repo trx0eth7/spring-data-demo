@@ -4,21 +4,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.trx.spring.data.demo.entity.ExamSheet;
 import ru.trx.spring.data.demo.entity.Student;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 
 /**
@@ -72,7 +72,6 @@ class ExamSheetRepositoryTest {
                 .findAllByStudentId(student.getId());
 
         // then
-
         assertEquals(Set.of(examSheet.getId(), examSheet2.getId()),
                 studentExamSheets.stream()
                         .map(ExamSheet::getId)
@@ -110,10 +109,10 @@ class ExamSheetRepositoryTest {
                         LocalDate.of(1998, 1, 1));
 
         // then
-        assertEquals(Set.of(examSheet.getId(), examSheet2.getId()),
-                studentExamSheets.stream()
-                        .map(ExamSheet::getId)
-                        .collect(Collectors.toSet()), "Not equals");
+        assertTrue(studentExamSheets.stream()
+                .map(ExamSheet::getId)
+                .collect(Collectors.toSet())
+                .containsAll(Set.of(examSheet.getId(), examSheet2.getId())), "Not equals");
     }
 
     @Test
@@ -143,5 +142,27 @@ class ExamSheetRepositoryTest {
                 .collect(Collectors.toList()), foundExamSheets.stream()
                 .map(es -> es.getName().substring(48)) // 49 - is position after '#'
                 .collect(Collectors.toList()));
+    }
+
+    @Test
+    void findAllByNameContainingIgnoreCaseWithSorting() {
+        // given
+        var baseNumber = UUID.randomUUID().toString();
+
+        var generatedExamSheets = Stream.generate(ExamSheet::new)
+                .peek(e -> e.setName("Exam sheet " + baseNumber))
+                .limit(10)
+                .collect(Collectors.toList());
+
+        examSheetRepository.saveAll(generatedExamSheets);
+
+        // when
+        var foundExamSheets = examSheetRepository
+                .findAllByNameContainingIgnoreCase(baseNumber, Sort.by(ASC, "id"));
+
+        // then
+        assertEquals(foundExamSheets.stream()
+                .sorted(Comparator.comparing(ExamSheet::getId))
+                .collect(Collectors.toList()), foundExamSheets, "Not equals");
     }
 }

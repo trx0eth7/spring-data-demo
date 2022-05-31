@@ -24,4 +24,8 @@ public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer> {
                                                      LocalDate birthdayEnd);
 
     List<ExamSheet> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    List<ExamSheet> findAllByNameContainingIgnoreCase(String name, Sort sort);
+
+
 }
