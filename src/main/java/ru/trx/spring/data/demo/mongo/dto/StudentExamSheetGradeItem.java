@@ -1,37 +1,22 @@
 package ru.trx.spring.data.demo.mongo.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
 /**
  * @author Alexander Vasiliev
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class StudentExamSheetGradeItem {
 
     @Id
     private String id;
-
-    private String studentId;
-
+    private Integer studentId;
     private Integer value;
-
-    public StudentExamSheetGradeItem() {
-    }
-
-    public StudentExamSheetGradeItem(String id, String studentId, Integer value) {
-        this.id = id;
-        this.studentId = studentId;
-        this.value = value;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public Integer getValue() {
-        return value;
-    }
 }

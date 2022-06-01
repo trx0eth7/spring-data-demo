@@ -35,14 +35,14 @@ class StudentExamSheetGradeMongoRepositoryTest {
     void findAllByExamSheetId() {
         // given
         var examSheet = examSheetRepository.save(new ExamSheet());
-        var studentExamSheetGrade = new StudentExamSheetGrade(String.valueOf(examSheet.getId()), List.of());
-        var studentExamSheetGrade2 = new StudentExamSheetGrade(String.valueOf(examSheet.getId()), List.of());
+        var studentExamSheetGrade = new StudentExamSheetGrade(new ObjectId().toString(), examSheet.getId(), List.of());
+        var studentExamSheetGrade2 = new StudentExamSheetGrade(new ObjectId().toString(), examSheet.getId(), List.of());
         var savedStudentExamSheetGrades = studentExamSheetGradeMongoRepository
                 .saveAll(List.of(studentExamSheetGrade, studentExamSheetGrade2));
 
         // when
         var foundStudentExamSheetGrades = studentExamSheetGradeMongoRepository
-                .findAllByExamSheetId(String.valueOf(examSheet.getId()));
+                .findAllByExamSheetId(examSheet.getId());
 
         // then
         assertEquals(savedStudentExamSheetGrades.stream()
@@ -58,10 +58,10 @@ class StudentExamSheetGradeMongoRepositoryTest {
         var student = studentRepository.save(new Student());
 
         var savedStudentExamSheetGrade = studentExamSheetGradeMongoRepository
-                .save(new StudentExamSheetGrade(String.valueOf(examSheet.getId()), List.of()));
+                .save(new StudentExamSheetGrade(new ObjectId().toString(), examSheet.getId(), List.of()));
 
         // when
-        var studentExamSheetGradeItem = new StudentExamSheetGradeItem(new ObjectId().toString(), String.valueOf(student.getId()), 10);
+        var studentExamSheetGradeItem = new StudentExamSheetGradeItem(new ObjectId().toString(), student.getId(), 10);
         var modifiedStudentExamSheetGrade = studentExamSheetGradeMongoRepository
                 .addToStudentExamSheetGradeItem(savedStudentExamSheetGrade.getId(), studentExamSheetGradeItem);
 

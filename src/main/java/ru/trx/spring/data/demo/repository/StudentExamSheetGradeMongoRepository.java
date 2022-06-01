@@ -11,6 +11,6 @@ import java.util.List;
 public interface StudentExamSheetGradeMongoRepository extends MongoRepository<StudentExamSheetGrade, String>,
         CustomStudentExamSheetGradeMongoRepository {
 
-    List<StudentExamSheetGrade> findAllByExamSheetId(String examSheetId);
+    List<StudentExamSheetGrade> findAllByExamSheetId(Integer examSheetId);
 
 }
