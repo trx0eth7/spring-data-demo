@@ -22,7 +22,7 @@ public class CustomExamSheetRepositoryImpl implements CustomExamSheetRepository 
     @Override
     public void deleteStudent(Integer examSheetId, Integer studentId) {
         em.createNativeQuery("delete from exam_sheet_students es " +
-                "where es.exam_sheet_id = 1:examSheetId and es.students_id = :studentId")
+                "where es.exam_sheet_id = :examSheetId and es.students_id = :studentId")
                 .setParameter("studentId", studentId)
                 .setParameter("examSheetId", examSheetId)
                 .executeUpdate();

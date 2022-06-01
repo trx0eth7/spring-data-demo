@@ -1,6 +1,8 @@
 package ru.trx.spring.data.demo.entity;
 
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +18,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "exam_sheet")
+@NoArgsConstructor
+@Getter
+@Setter
 public class ExamSheet {
 
     @Id
@@ -31,28 +36,4 @@ public class ExamSheet {
             joinColumns = @JoinColumn(name = "exam_sheet_id"),
             inverseJoinColumns = @JoinColumn(name = "students_id"))
     private List<Student> students = new ArrayList<>();
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

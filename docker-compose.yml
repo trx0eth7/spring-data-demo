@@ -1,24 +1,10 @@
-version: '3'
+version: '3.8'
 
 networks:
-  sdd-net:
-    driver: bridge
+  default:
+    name: sdd-net
 
 services:
-#  app_sdd:
-#    build:
-#      context: ./deployment/app
-#      dockerfile: ./Dockerfile
-#    container_name: app_sdd
-#    restart: on-failure
-#    depends_on:
-#      - postgres_sdd
-#      - mongo_sdd
-#    volumes:
-#      - ./deployment/app:/opt/app-home
-#    ports:
-#      - 8080:8080
-
   postgres_sdd:
     container_name: postgres_sdd
     image: postgres:12.6
@@ -27,24 +13,15 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: toor
       POSTGRES_DB: sdd
-    volumes:
-      - ./deployment/postgresql/pg-data:/var/lib/postgresql/data
-      - ./deployment/postgresql/pg-backup:/var/lib/postgresql/backup
     ports:
       - 5432:5432
-    networks:
-      - sdd-net
 
-#  mongo_sdd:
-#    image: "mongo"
-#    container_name: mongo_sdd
-#    restart: always
-#    environment:
-#      MONGO_INITDB_DATABASE: sdd
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: toor
-#    volumes:
-#      - ./deployment/mongo/mongodbdata:/data/db
-#      - ./deployment/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-#    ports:
-#      - "27017-27019:27017-27019"
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=sdd
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=toor

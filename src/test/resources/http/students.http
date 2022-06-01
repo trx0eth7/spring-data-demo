@@ -1,0 +1,15 @@
+###
+PUT http://localhost:8080/students
+Content-Type: application/json
+
+{
+  "firstName" : "{{firstName}}",
+  "lastName" : "{{lastName}}",
+  "birthday" : "{{birthday}}"
+}
+
+###
+GET http://localhost:8080/students
+
+###
+GET http://localhost:8080/students/{{studentId}}

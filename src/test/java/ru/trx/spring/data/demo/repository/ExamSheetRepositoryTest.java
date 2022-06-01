@@ -190,4 +190,25 @@ class ExamSheetRepositoryTest {
                 .map(Student::getId)
                 .collect(Collectors.toList()), "Not equals");
     }
+
+    @Test
+    void findByIdWithStudents() {
+        // given
+        var student = new Student();
+        var student2 = new Student();
+
+        var students = studentRepository.saveAll(List.of(student, student2));
+
+        var examSheet = new ExamSheet();
+        examSheet.setStudents(students);
+
+        var savedExamSheet = examSheetRepository.save(examSheet);
+
+        // when
+        var foundExamSheet = examSheetRepository
+                .findByIdWithStudents(savedExamSheet.getId());
+
+        // then
+        assertEquals(foundExamSheet.getStudents().size(), 2);
+    }
 }

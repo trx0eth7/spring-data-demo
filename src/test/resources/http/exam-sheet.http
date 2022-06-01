@@ -1,0 +1,11 @@
+###
+GET http://localhost:8080/sheets
+
+###
+PUT http://localhost:8080/sheets
+Content-Type: application/json
+
+{ "name" : {{name}}}
+
+###
+GET http://localhost:8080/sheets/{{id}}

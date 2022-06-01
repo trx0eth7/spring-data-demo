@@ -1,5 +1,0 @@
-###
-PUT http://localhost:8080/sheets
-Content-Type: application/json
-
-{ "name" : "test"}
