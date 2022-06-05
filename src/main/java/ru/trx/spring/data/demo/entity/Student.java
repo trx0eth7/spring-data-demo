@@ -9,31 +9,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "exam_sheet")
+@Table(name = "student")
 @NoArgsConstructor
 @Getter
 @Setter
-public class ExamSheet {
-
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "first_name")
+    private String firstName;
 
-    @ManyToMany
-    @JoinTable(name = "exam_sheet_students",
-            joinColumns = @JoinColumn(name = "exam_sheet_id"),
-            inverseJoinColumns = @JoinColumn(name = "students_id"))
-    private List<Student> students = new ArrayList<>();
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "birthday")
+    private LocalDate birthday;
 }
