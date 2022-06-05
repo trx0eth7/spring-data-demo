@@ -6,9 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import ru.trx.spring.data.demo.entity.ExamSheet;
+import ru.trx.spring.data.demo.entity.Student;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,6 +26,9 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 class ExamSheetRepositoryTest {
     @Autowired
     ExamSheetRepository examSheetRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
 
     @Test
     void findByNameContainingIgnoreCase() {
@@ -94,5 +99,31 @@ class ExamSheetRepositoryTest {
                 .collect(Collectors.toList()), foundExamSheets.stream()
                 .map(es -> es.getName().substring(48)) // 49 - is position after '#'
                 .collect(Collectors.toList()));
+    }
+
+    @Test
+    void findAllByStudentId() {
+        // given
+        var student = studentRepository.save(new Student());
+        var examSheets = examSheetRepository
+                .saveAll(List.of(new ExamSheet(), new ExamSheet(), new ExamSheet()));
+
+        var examSheet = examSheets.get(0);
+        var examSheet2 = examSheets.get(1);
+
+        examSheet.setStudents(List.of(student));
+        examSheet2.setStudents(List.of(student));
+
+        examSheetRepository.saveAll(List.of(examSheet, examSheet2));
+
+        // when
+        var studentExamSheets = examSheetRepository
+                .findAllByStudentId(student.getId());
+
+        // then
+        assertEquals(Set.of(examSheet.getId(), examSheet2.getId()),
+                studentExamSheets.stream()
+                        .map(ExamSheet::getId)
+                        .collect(Collectors.toSet()), "Not equals");
     }
 }
