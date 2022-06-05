@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import ru.trx.spring.data.demo.entity.ExamSheet;
 import ru.trx.spring.data.demo.entity.Student;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 
 /**
@@ -125,5 +127,42 @@ class ExamSheetRepositoryTest {
                 studentExamSheets.stream()
                         .map(ExamSheet::getId)
                         .collect(Collectors.toSet()), "Not equals");
+    }
+
+    @Test
+    void findAllByStudentsBirthdayBetween() {
+        // given
+        var student = new Student();
+        student.setBirthday(LocalDate.of(1995, 4, 7));
+
+        var student2 = new Student();
+        student2.setBirthday(LocalDate.of(1989, 2, 24));
+
+        studentRepository.saveAll(List.of(student, student2));
+
+        var examSheets = examSheetRepository
+                .saveAll(List.of(new ExamSheet(), new ExamSheet(), new ExamSheet()));
+
+        var examSheet = examSheets.get(0);
+        var examSheet2 = examSheets.get(1);
+        var examSheet3 = examSheets.get(2);
+
+        examSheet.setStudents(List.of(student, student2));
+        examSheet2.setStudents(List.of(student, student2));
+        examSheet3.setStudents(List.of(student2));
+
+        examSheetRepository.saveAll(List.of(examSheet, examSheet2));
+
+        // when
+        var studentExamSheets = examSheetRepository
+                .findAllByStudentsBirthdayBetween(
+                        LocalDate.of(1993, 1, 1),
+                        LocalDate.of(1998, 1, 1));
+
+        // then
+        assertTrue(studentExamSheets.stream()
+                .map(ExamSheet::getId)
+                .collect(Collectors.toSet())
+                .containsAll(Set.of(examSheet.getId(), examSheet2.getId())), "Not equals");
     }
 }
