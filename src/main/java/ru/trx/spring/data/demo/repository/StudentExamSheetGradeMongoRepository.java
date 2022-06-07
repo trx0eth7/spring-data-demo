@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Alexander Vasiliev
  */
-public interface StudentExamSheetGradeMongoRepository extends MongoRepository<StudentExamSheetGrade, String> {
+public interface StudentExamSheetGradeMongoRepository extends MongoRepository<StudentExamSheetGrade, String>, CustomStudentExamSheetGradeMongoRepository {
 
     List<StudentExamSheetGrade> findAllByExamSheetId(Integer examSheetId);
 

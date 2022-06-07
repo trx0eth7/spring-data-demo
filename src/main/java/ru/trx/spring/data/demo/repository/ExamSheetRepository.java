@@ -9,7 +9,7 @@ import ru.trx.spring.data.demo.entity.ExamSheet;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer> {
+public interface ExamSheetRepository extends JpaRepository<ExamSheet, Integer>, CustomExamSheetRepository {
 
     List<ExamSheet> findAllByNameContainingIgnoreCase(String name);
 
