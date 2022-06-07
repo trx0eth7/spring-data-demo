@@ -9,6 +9,7 @@ import ru.trx.spring.data.demo.entity.ExamSheet;
 import ru.trx.spring.data.demo.entity.Student;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -164,5 +165,26 @@ class ExamSheetRepositoryTest {
                 .map(ExamSheet::getId)
                 .collect(Collectors.toSet())
                 .containsAll(Set.of(examSheet.getId(), examSheet2.getId())), "Not equals");
+    }
+
+    @Test
+    void deleteStudentFromAllExamSheet() {
+        // given
+        var student = studentRepository.save(new Student());
+
+        var examSheet = new ExamSheet();
+        examSheet.setStudents(List.of(student));
+        var examSheet2 = new ExamSheet();
+        examSheet2.setStudents(List.of(student));
+
+        examSheetRepository.saveAll(List.of(examSheet, examSheet2));
+
+        // when
+        examSheetRepository.deleteStudent(student.getId());
+
+        // then
+        var examSheets = examSheetRepository.findAllByStudentId(student.getId());
+
+        assertEquals(Collections.emptyList(), examSheets, "Student hasn't been deleted from exam sheets");
     }
 }
